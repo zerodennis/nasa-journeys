@@ -1,0 +1,36 @@
+<.form
+  let={f}
+  for={@mission}
+  id="mission-calculator-container"
+>
+  <div class={[classes("-hidden": !@total_fuel, "-show": @total_fuel)]}>
+    <h1 style="text-align: center;"><%= "The mission will need #{@total_fuel}kg of fuel" %></h1>
+  </div>
+  <div class="planets-container">
+    <%= for planet <- @planets do %>
+      <div class="planet-item">
+        <div class={["planet", classes("-selected": @selected_planet == planet)]} phx-click="select_planet" phx-value-planet={planet}>
+          <img src={Routes.static_path(@socket, "/images/#{planet}.png")} />
+        </div>
+        <%= if @selected_planet == planet do %>
+          <div class="launch-land-container">
+            <button type="button" phx-click="add_landing">
+              Land
+            </button>
+            <button type="button" phx-click="add_launch">
+              Launch
+            </button>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <div>
+    <%= text_input f, :ship_mass, placeholder: "Ship Mass", value: input_value(f, :ship_mass), phx_change: "change_ship_mass", type: "number" %>
+  </div>
+  <div>
+    <button type="button" phx-click="submit" disabled={is_submit_disabled?(@mission)}>
+      Begin Mission
+    </button>
+  </div>
+</.form>
