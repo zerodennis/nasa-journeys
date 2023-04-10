@@ -37,8 +37,8 @@ defmodule NasaJourneys.Services.JourneyCalculationService do
 
   def calculate_additional_fuel(:launch, mass, gravity, acc) when mass > 0 do
     fuel =
-      mass
-      |> apply_formula(gravity, @launch_lhs_constant, @launch_rhs_constant)
+      :launch
+      |> apply_formula(mass, gravity)
       |> floor()
 
     calculate_additional_fuel(:launch, fuel, gravity, fuel + acc)
@@ -46,8 +46,8 @@ defmodule NasaJourneys.Services.JourneyCalculationService do
 
   def calculate_additional_fuel(:land, mass, gravity, acc) when mass > 0 do
     fuel =
-      mass
-      |> apply_formula(gravity, @landing_lhs_constant, @landing_rhs_constant)
+      :land
+      |> apply_formula(mass, gravity)
       |> floor()
 
     calculate_additional_fuel(:land, fuel, gravity, fuel + acc)
@@ -55,6 +55,9 @@ defmodule NasaJourneys.Services.JourneyCalculationService do
 
   def calculate_additional_fuel(_action, mass, _gravity, acc), do: acc + abs(mass)
 
-  defp apply_formula(mass, gravity, constant_1, constant_2),
-    do: mass * gravity * constant_1 - constant_2
+  defp apply_formula(:launch, mass, gravity),
+    do: mass * gravity * @launch_lhs_constant - @launch_rhs_constant
+
+  defp apply_formula(:land, mass, gravity),
+    do: mass * gravity * @landing_lhs_constant - @landing_rhs_constant
 end
