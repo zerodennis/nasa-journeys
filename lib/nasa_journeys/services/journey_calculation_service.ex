@@ -17,57 +17,43 @@ defmodule NasaJourneys.Services.JourneyCalculationService do
 
     iex> calculate_fuel(28801, [{:launch, 9.807}, {:land, 1.62}])
   """
+
   def calculate_total_fuel(mass, mission_path) do
     mission_path = Enum.reverse(mission_path)
 
-    Enum.reduce(mission_path, mass, fn
-      {:launch, gravity}, acc ->
-        calculate_launch_fuel(acc, gravity, 0) + acc
-
-      {:land, gravity}, acc ->
-        calculate_landing_fuel(acc, gravity, 0) + acc
+    Enum.reduce(mission_path, mass, fn {action, gravity} = _v, acc ->
+      calculate_additional_fuel(action, acc, gravity, 0) + acc
     end) - mass
   end
 
-  @doc """
-  Recursively calculates the additional fuel needed for a launch until
-  the additional needed left is 0 or negative
+  # @doc """
+  # Recursively calculates the additional fuel needed for a flight until
+  # the additional needed left is 0 or negative
 
-  ## Examples
+  # ## Examples
 
-    iex> calculate_launch_fuel(28801, 9.807, 28801)
-  """
-  def calculate_launch_fuel(mass, gravity, acc) when mass > 0 do
+  #   iex> calculate_additional_fuel(:launch 28801, 9.807, 28801)
+  # """
+
+  def calculate_additional_fuel(:launch, mass, gravity, acc) when mass > 0 do
     fuel =
       mass
       |> apply_formula(gravity, @launch_lhs_constant, @launch_rhs_constant)
       |> floor()
 
-    calculate_launch_fuel(fuel, gravity, fuel + acc)
+    calculate_additional_fuel(:launch, fuel, gravity, fuel + acc)
   end
 
-  def calculate_launch_fuel(mass, _gravity, acc), do: acc + abs(mass)
-
-  @spec calculate_landing_fuel(number, any, number) :: number
-  @doc """
-  Recursively calculates the additional fuel needed for a launchuntil
-  the additional needed left is 0 or negative
-
-  ## Examples
-
-    iex> calculate_landing_fuel(28801, 9.807, 28801)
-  """
-
-  def calculate_landing_fuel(mass, gravity, acc) when mass > 0 do
+  def calculate_additional_fuel(:land, mass, gravity, acc) when mass > 0 do
     fuel =
       mass
       |> apply_formula(gravity, @landing_lhs_constant, @landing_rhs_constant)
       |> floor()
 
-    calculate_landing_fuel(fuel, gravity, fuel + acc)
+    calculate_additional_fuel(:land, fuel, gravity, fuel + acc)
   end
 
-  def calculate_landing_fuel(mass, _gravity, acc), do: acc + abs(mass)
+  def calculate_additional_fuel(_action, mass, _gravity, acc), do: acc + abs(mass)
 
   defp apply_formula(mass, gravity, constant_1, constant_2),
     do: mass * gravity * constant_1 - constant_2
