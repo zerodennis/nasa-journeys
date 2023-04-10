@@ -3,6 +3,7 @@
 import "../css/app.css"
 import "../css/mission.css"
 import "../css/fonts.css"
+import "../css/modal.css"
 
 // If you want to use Phoenix channels, run `mix help phx.gen.channel`
 // to get started and then uncomment the line below.

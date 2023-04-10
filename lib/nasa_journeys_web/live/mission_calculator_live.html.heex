@@ -32,5 +32,16 @@
     <button type="button" phx-click="submit" disabled={is_submit_disabled?(@mission)}>
       Begin Mission
     </button>
+    <button type="button" phx-click="open-view-mission-modal" disabled={is_modal_disabled?(@mission)}>
+      View Mission
+    </button>
   </div>
 </.form>
+<%= if @show_modal do %>
+  <%= live_render @socket, NasaJourneysWeb.Live.MissionModal,
+    id: "view-mission-modal",
+    session: %{
+      "mission" => @mission
+    }
+  %>
+<% end %>

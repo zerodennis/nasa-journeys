@@ -38,7 +38,10 @@ defmodule NasaJourneys.Services.JourneyCalculationService do
     iex> calculate_launch_fuel(28801, 9.807, 28801)
   """
   def calculate_launch_fuel(mass, gravity, acc) when mass > 0 do
-    fuel = floor(mass * gravity * @launch_lhs_constant - @launch_rhs_constant)
+    fuel =
+      mass
+      |> apply_formula(gravity, @launch_lhs_constant, @launch_rhs_constant)
+      |> floor()
 
     calculate_launch_fuel(fuel, gravity, fuel + acc)
   end
@@ -56,10 +59,16 @@ defmodule NasaJourneys.Services.JourneyCalculationService do
   """
 
   def calculate_landing_fuel(mass, gravity, acc) when mass > 0 do
-    fuel = floor(mass * gravity * @landing_lhs_constant - @landing_rhs_constant)
+    fuel =
+      mass
+      |> apply_formula(gravity, @landing_lhs_constant, @landing_rhs_constant)
+      |> floor()
 
     calculate_landing_fuel(fuel, gravity, fuel + acc)
   end
 
   def calculate_landing_fuel(mass, _gravity, acc), do: acc + abs(mass)
+
+  defp apply_formula(mass, gravity, constant_1, constant_2),
+    do: mass * gravity * constant_1 - constant_2
 end

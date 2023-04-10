@@ -108,3 +108,11 @@
   visibility: 1;
   opacity: 1;
 }
+
+.planet-modal-items {
+  height: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}

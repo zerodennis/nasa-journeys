@@ -1,0 +1,35 @@
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(107, 107, 107, 0.4);
+  z-index: 1002;
+  transition: 0.2s;
+}
+
+.modal-container > .modal-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 480px;
+  max-height: calc(100% - 80px);
+  background-color: white;
+  border-radius: 8px;
+  position: relative;
+  top: 48px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px #7e7e7e;
+  transition-delay: 0.2s;
+  transition: 0.2s;
+  transform: translateX(-16px);
+  padding: 16px;
+}
+
+.modal-container
+> .modal-box
+> .header {
+  display: flex;
+  justify-content: space-between;
+}
